@@ -3,6 +3,7 @@
 package lesson2.task1
 
 import lesson1.task1.discriminant
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
@@ -81,7 +82,17 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double {
+    val s1 = t1 * v1
+    val s2 = t2 * v2
+    val s3 = t3 * v3
+    val s = s1 + s2 + s3
+
+    if (s / 2 <= s1) return (s / 2) / v1
+    if (s / 2 > s1 && s / 2 <= (s1 + s2)) return t1 + ((s / 2 - s1) / v2)
+    if (s / 2 > (s1 + s2) && s / 2 <= (s1 + s2 + s3)) return t1 + t2 + ((s / 2 - s1 - s2) / v3)
+    return 0.0
+}
 
 /**
  * Простая (2 балла)
@@ -96,7 +107,12 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int {
+    var k = 0
+    if ((kingX == rookX1) || (kingY == rookY1)) k += 1
+    if ((kingX == rookX2) || (kingY == rookY2)) k += 2
+    return k
+}
 
 /**
  * Простая (2 балла)
@@ -112,7 +128,12 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
+): Int {
+    var k = 0
+    if (kingX == rookX || kingY == rookY) k += 1
+    if (abs(kingX - bishopX) == abs(kingY - bishopY)) k += 2
+    return k
+}
 
 /**
  * Простая (2 балла)
@@ -132,4 +153,30 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+    return when {
+        (a == b && a in c..d) || (c == d && c in a..b) || (a != b && b == c) || (a != b && a == d) -> 0
+        (b < c) || (d < a) -> -1
+        a < c && d < b && c != d -> d - c
+        c < a && b < d && a != b -> b - a
+        (a !in c..d) && (b in c..d) -> b - c
+        else -> d - a
+    }
+}
+//fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
+//    if ((a == b && a in c..d) || (c == d && c in a..b) || (a != b && b == c) || (a != b && a == d)) {
+//        return 0
+//    } else if ((b < c) || (d < a)) {
+//        return -1
+//    } else if (a < c && d < b && c != d) {
+//        return d - c
+//    } else if (c < a && b < d && a != b) {
+//        return b - a
+//    } else if ((a !in c..d) && (b in c..d)) {
+//        return b - c
+//    } else if ((c !in a..b) && (d in a..b)) {
+//        return d - a
+//    }
+//    return -1
+//}

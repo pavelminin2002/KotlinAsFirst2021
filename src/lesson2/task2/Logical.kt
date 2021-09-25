@@ -3,6 +3,9 @@
 package lesson2.task2
 
 import lesson1.task1.sqr
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sqrt
 
 /**
  * Пример
@@ -18,7 +21,8 @@ fun pointInsideCircle(x: Double, y: Double, x0: Double, y0: Double, r: Double) =
  * Четырехзначное число назовем счастливым, если сумма первых двух ее цифр равна сумме двух последних.
  * Определить, счастливое ли заданное число, вернуть true, если это так.
  */
-fun isNumberHappy(number: Int): Boolean = TODO()
+fun isNumberHappy(number: Int): Boolean =
+    ((number % 10) + ((number % 100) / 10)) == (((number % 1000) / 100) + number / 1000)
 
 /**
  * Простая (2 балла)
@@ -48,7 +52,11 @@ fun daysInMonth(month: Int, year: Int): Int = TODO()
 fun circleInside(
     x1: Double, y1: Double, r1: Double,
     x2: Double, y2: Double, r2: Double
-): Boolean = TODO()
+): Boolean {
+    return if (pointInsideCircle(x1, y1, x2, y2, r2)) {
+        sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2
+    } else false
+}
 
 /**
  * Средняя (3 балла)
@@ -59,4 +67,30 @@ fun circleInside(
  * кирпич 4 х 4 х 4 пройдёт через отверстие 4 х 4.
  * Вернуть true, если кирпич пройдёт
  */
-fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean = TODO()
+fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
+    val xMax = max(r, s)
+    val xMin = min(r, s)
+    return when {
+        (a >= b && a >= c) && (b >= c) -> (b <= xMax) && (c <= xMin)
+        (a >= b && a >= c) && (b < c) -> (c <= xMax) && (b <= xMin)
+        (b >= a && b >= c) && (a >= c) -> (a <= xMax) && (c <= xMin)
+        (b >= a && b >= c) && (a < c) -> (c <= xMax) && (a <= xMin)
+        (a >= b) -> (a <= xMax) && (b <= xMin)
+        else -> (b <= xMax) && (a <= xMin)
+    }
+}
+//{
+//    val xmax = if (r >= s) r else s
+//    val xmin = if (r <= s) r else s
+//    return if (a >= b && a >= c) {
+//        if (b >= c) {
+//            (b <= xmax) && (c <= xmin)
+//        } else (c <= xmax) && (b <= xmin)
+//    } else if (b >= a && b >= c) {
+//        if (a >= c) {
+//            (a <= xmax) && (c <= xmin)
+//        } else (c <= xmax) && (a <= xmin)
+//    } else if (a >= b) {
+//        (a <= xmax) && (b <= xmin)
+//    } else (b <= xmax) && (a <= xmin)
+//}
