@@ -6,7 +6,7 @@ import lesson1.task1.discriminant
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
-
+import kotlin.math.min
 // Урок 2: ветвления (здесь), логический тип (см. 2.2).
 // Максимальное количество баллов = 6
 // Рекомендуемое количество баллов = 5
@@ -87,13 +87,16 @@ fun timeForHalfWay(
     val s2 = t2 * v2
     val s3 = t3 * v3
     val s = s1 + s2 + s3
-
-    if (s / 2 <= s1) return (s / 2) / v1
-    if (s / 2 > s1 && s / 2 <= (s1 + s2)) return t1 + ((s / 2 - s1) / v2)
-    if (s / 2 > (s1 + s2) && s / 2 <= (s1 + s2 + s3)) return t1 + t2 + ((s / 2 - s1 - s2) / v3)
-    return 0.0
+    return when {
+        (s / 2 <= s1) -> (s / 2) / v1
+        (s / 2 > s1 && s / 2 <= (s1 + s2)) -> t1 + ((s / 2 - s1) / v2)
+        else -> t1 + t2 + ((s / 2 - s1 - s2) / v3)
+    }
 }
-
+//if (s / 2 <= s1) return (s / 2) / v1
+//    if (s / 2 > s1 && s / 2 <= (s1 + s2)) return t1 + ((s / 2 - s1) / v2)
+//    if (s / 2 > (s1 + s2) && s / 2 <= (s1 + s2 + s3)) return t1 + t2 + ((s / 2 - s1 - s2) / v3)
+//    return 0.0
 /**
  * Простая (2 балла)
  *
@@ -154,16 +157,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Если пересечения нет, вернуть -1.
  */
 
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
-    return when {
-        (a == b && a in c..d) || (c == d && c in a..b) || (a != b && b == c) || (a != b && a == d) -> 0
-        (b < c) || (d < a) -> -1
-        a < c && d < b && c != d -> d - c
-        c < a && b < d && a != b -> b - a
-        (a !in c..d) && (b in c..d) -> b - c
-        else -> d - a
-    }
-}
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = if (b < c || d < a) -1 else min(b, d) - max(a, c)
 //fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
 //    if ((a == b && a in c..d) || (c == d && c in a..b) || (a != b && b == c) || (a != b && a == d)) {
 //        return 0

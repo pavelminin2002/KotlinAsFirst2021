@@ -93,17 +93,29 @@ fun digitNumber(n: Int): Int {
 fun fib(n: Int): Int {
     var x1 = 1
     var x2 = 1
-    var k = 0
-    var summa = 2
-    while (n - 2 > k) {
-        summa = x1 + x2
+    var k = 2
+    var sumValuess: Int
+    while (n > k) {
+        sumValuess = x1 + x2
         x1 = x2
-        x2 = summa
+        x2 = sumValuess
         k++
     }
     return x2
 }
-
+//{
+//    var x1 = 1
+//    var x2 = 1
+//    var k = 0
+//    var summa = 2
+//    while (n - 2 > k) {
+//        summa = x1 + x2
+//        x1 = x2
+//        x2 = summa
+//        k++
+//    }
+//    return x2
+//}
 /**
  * Простая (2 балла)
  *
@@ -129,20 +141,20 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var m = 0
-    for (i in 2..sqrt(n.toDouble()).toInt()) {
-        if (n % i == 0) {
-            m = n / i
-            break
-        }
-    }
-    if (m == 0) {
-        m = 1
-    }
-    return m
-}
-
+fun maxDivisor(n: Int): Int = if (minDivisor(n) == n) 1 else n / minDivisor(n)
+//{
+//    var m = 0
+//    for (i in 2..sqrt(n.toDouble()).toInt()) {
+//        if (n % i == 0) {
+//            m = n / i
+//            break
+//        }
+//    }
+//    if (m == 0) {
+//        m = 1
+//    }
+//    return m
+//}
 /**
  * Простая (2 балла)
  *
@@ -193,9 +205,9 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var mini = min(m, n)
+    var smallestValue = min(m, n)
     var k = true
-    for (i in 2..mini) {
+    for (i in 2..smallestValue) {
         if (m % i == 0 && n % i == 0) {
             k = false
             break
@@ -214,11 +226,10 @@ fun isCoPrime(m: Int, n: Int): Boolean {
 fun revert(n: Int): Int {
     var nn = n
     var newN = n % 10
-    while (nn > 0) {
+    while (nn > 0 && nn > 9) {
         nn /= 10
         newN = newN * 10 + nn % 10
     }
-    newN /= 10
     return newN
 }
 
@@ -287,7 +298,9 @@ fun squareSequenceDigit(n: Int): Int {
     var number = 1
     var q = 0
     var s = 0
-    for (i in 1..n) {
+    var i = 0
+    while (true) {
+        i++
         q = digitNumber(i * i)
         s += q
         if (s >= n) {
@@ -295,16 +308,21 @@ fun squareSequenceDigit(n: Int): Int {
             break
         }
     }
-    if (s == n) return number % 10
-    else {
-        while (s != n) {
-            number /= 10
-            s -= 1
-        }
-        return number % 10
+    while (s != n) {
+        number /= 10
+        s -= 1
     }
-}
+    return number % 10
 
+}
+//if (s == n) return number % 10
+//    else {
+//        while (s != n) {
+//            number /= 10
+//            s -= 1
+//        }
+//        return number % 10
+//    }
 /**
  * Сложная (5 баллов)
  *
@@ -318,7 +336,9 @@ fun fibSequenceDigit(n: Int): Int {
     var number = 1
     var q = 0
     var s = 0
-    for (i in 1..n) {
+    var i = 0
+    while (true) {
+        i++
         q = digitNumber(fib(i))
         s += q
         if (s >= n) {
@@ -326,12 +346,9 @@ fun fibSequenceDigit(n: Int): Int {
             break
         }
     }
-    if (s == n) return number % 10
-    else {
-        while (s != n) {
-            number /= 10
-            s -= 1
-        }
-        return number % 10
+    while (s != n) {
+        number /= 10
+        s -= 1
     }
+    return number % 10
 }
