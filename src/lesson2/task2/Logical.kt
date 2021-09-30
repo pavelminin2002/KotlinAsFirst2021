@@ -71,27 +71,20 @@ fun circleInside(
 fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val xMax = max(r, s)
     val xMin = min(r, s)
-    return when {
-        (a >= b && a >= c) && (b >= c) -> (b <= xMax) && (c <= xMin)
-        (a >= b && a >= c) && (b < c) -> (c <= xMax) && (b <= xMin)
-        (b >= a && b >= c) && (a >= c) -> (a <= xMax) && (c <= xMin)
-        (b >= a && b >= c) && (a < c) -> (c <= xMax) && (a <= xMin)
-        (a >= b) -> (a <= xMax) && (b <= xMin)
-        else -> (b <= xMax) && (a <= xMin)
-    }
+    val yMean = a + b + c - maxOf(a, b, c) - minOf(a, b, c)
+    val yMin = minOf(a, b, c)
+    return yMean <= xMax && yMin <= xMin
 }
+
 //{
-//    val xmax = if (r >= s) r else s
-//    val xmin = if (r <= s) r else s
-//    return if (a >= b && a >= c) {
-//        if (b >= c) {
-//            (b <= xmax) && (c <= xmin)
-//        } else (c <= xmax) && (b <= xmin)
-//    } else if (b >= a && b >= c) {
-//        if (a >= c) {
-//            (a <= xmax) && (c <= xmin)
-//        } else (c <= xmax) && (a <= xmin)
-//    } else if (a >= b) {
-//        (a <= xmax) && (b <= xmin)
-//    } else (b <= xmax) && (a <= xmin)
+//    val xMax = max(r, s)
+//    val xMin = min(r, s)
+//    return when {
+//        (a >= b && a >= c) && (b >= c) -> (b <= xMax) && (c <= xMin)
+//        (a >= b && a >= c) && (b < c) -> (c <= xMax) && (b <= xMin)
+//        (b >= a && b >= c) && (a >= c) -> (a <= xMax) && (c <= xMin)
+//        (b >= a && b >= c) && (a < c) -> (c <= xMax) && (a <= xMin)
+//        (a >= b) -> (a <= xMax) && (b <= xMin)
+//        else -> (b <= xMax) && (a <= xMin)
+//    }
 //}

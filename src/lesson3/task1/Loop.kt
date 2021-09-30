@@ -5,6 +5,7 @@ package lesson3.task1
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
+import kotlin.math.max
 
 // Урок 3: циклы
 // Максимальное количество баллов = 9
@@ -80,7 +81,7 @@ fun digitNumber(n: Int): Int {
     do {
         k++
         number /= 10
-    } while (number > 0)
+    } while (number != 0)
     return k
 }
 
@@ -188,15 +189,25 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = 0
-    var l = true
-    while (l) {
-        k++
-        if (k % m == 0 && k % n == 0) l = false
+    var x1 = m
+    var x2 = n
+    var p = 0
+    while (x1 != 0 && x2 != 0) {
+        if (x1 > x2) x1 %= x2 else x2 %= x1
     }
-    return k
+    p = max(x1, x2)
+    return (m * n) / p
 }
 
+//{
+//    var k = 0
+//    var l = true
+//    while (l) {
+//        k++
+//        if (k % m == 0 && k % n == 0) l = false
+//    }
+//    return k
+//}
 /**
  * Средняя (3 балла)
  *
@@ -205,7 +216,7 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var smallestValue = min(m, n)
+    val smallestValue = min(m, n)
     var k = true
     for (i in 2..smallestValue) {
         if (m % i == 0 && n % i == 0) {
@@ -308,11 +319,7 @@ fun squareSequenceDigit(n: Int): Int {
             break
         }
     }
-    while (s != n) {
-        number /= 10
-        s -= 1
-    }
-    return number % 10
+    return i1(s, n, number)
 
 }
 //if (s == n) return number % 10
@@ -346,9 +353,15 @@ fun fibSequenceDigit(n: Int): Int {
             break
         }
     }
-    while (s != n) {
-        number /= 10
-        s -= 1
+    return i1(s, n, number)
+}
+
+private fun i1(s: Int, n: Int, number: Int): Int {
+    var s1 = s
+    var number1 = number
+    while (s1 != n) {
+        number1 /= 10
+        s1 -= 1
     }
-    return number % 10
+    return number1 % 10
 }
