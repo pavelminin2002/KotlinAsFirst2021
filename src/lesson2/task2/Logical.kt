@@ -54,11 +54,7 @@ fun circleInside(
     x2: Double, y2: Double, r2: Double
 ): Boolean =
     pointInsideCircle(x1, y1, x2, y2, r2) && (sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2)
-//{
-//    return if (pointInsideCircle(x1, y1, x2, y2, r2)) {
-//        sqrt(sqr(x1 - x2) + sqr(y1 - y2)) + r1 <= r2
-//    } else false
-//}
+
 /**
  * Средняя (3 балла)
  *
@@ -75,16 +71,3 @@ fun brickPasses(a: Int, b: Int, c: Int, r: Int, s: Int): Boolean {
     val yMin = minOf(a, b, c)
     return yMean <= xMax && yMin <= xMin
 }
-
-//{
-//    val xMax = max(r, s)
-//    val xMin = min(r, s)
-//    return when {
-//        (a >= b && a >= c) && (b >= c) -> (b <= xMax) && (c <= xMin)
-//        (a >= b && a >= c) && (b < c) -> (c <= xMax) && (b <= xMin)
-//        (b >= a && b >= c) && (a >= c) -> (a <= xMax) && (c <= xMin)
-//        (b >= a && b >= c) && (a < c) -> (c <= xMax) && (a <= xMin)
-//        (a >= b) -> (a <= xMax) && (b <= xMin)
-//        else -> (b <= xMax) && (a <= xMin)
-//    }
-//}

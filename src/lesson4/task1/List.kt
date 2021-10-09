@@ -4,6 +4,7 @@ package lesson4.task1
 
 import lesson1.task1.discriminant
 import kotlin.math.sqrt
+import kotlin.math.pow
 
 // Урок 4: списки
 // Максимальное количество баллов = 12
@@ -181,16 +182,16 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> = TODO()
  */
 fun factorize(n: Int): List<Int> {
     val m = mutableListOf<Int>()
-    var k = 1
+    var k = 2
     var nn = n
-    while (true) {
-        if (nn == 1) break
-        k++
+    while (nn != 1) {
         if (nn % k == 0) {
             m.add(k)
             nn /= k
-            k = 1
+            k = 2
+            continue
         }
+        k++
     }
     return m.sorted()
 }
@@ -211,7 +212,24 @@ fun factorizeToString(n: Int): String = factorize(n).joinToString(separator = "*
  * Результат перевода вернуть в виде списка цифр в base-ичной системе от старшей к младшей,
  * например: n = 100, base = 4 -> (1, 2, 1, 0) или n = 250, base = 14 -> (1, 3, 12)
  */
-fun convert(n: Int, base: Int): List<Int> = TODO()
+fun convert(n: Int, base: Int): List<Int> {
+    var nn = n
+    var q = base
+    var b: Int
+    val result = mutableListOf<Int>()
+    if (nn < base) {
+        result.add(nn)
+        return result
+    }
+    while (q >= base) {
+        q = nn / base
+        b = nn % base
+        result.add(0, b)
+        nn = q
+    }
+    result.add(0, q)
+    return result
+}
 
 /**
  * Сложная (4 балла)
@@ -224,7 +242,19 @@ fun convert(n: Int, base: Int): List<Int> = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun convertToString(n: Int, base: Int): String = TODO()
+fun convertToString(n: Int, base: Int): String {
+    val letters = mutableListOf<Char>()
+    for (char in 'a'..'z') letters.add(char)
+    val result = convert(n, base)
+    val result2 = mutableListOf<Any>()
+    for (i in result.indices) {
+        if (result[i] > 9) {
+            result2.add(letters[(result[i] - 10)])
+        } else result2.add(result[i])
+    }
+    return result2.joinToString(separator = "")
+}
+
 
 /**
  * Средняя (3 балла)
@@ -233,7 +263,12 @@ fun convertToString(n: Int, base: Int): String = TODO()
  * из системы счисления с основанием base в десятичную.
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
-fun decimal(digits: List<Int>, base: Int): Int = TODO()
+fun decimal(digits: List<Int>, base: Int): Int {
+    val digits2 = digits.reversed()
+    var s = 0
+    for (i in digits2.indices) s += digits2[i] * base.toDouble().pow(i).toInt()
+    return s
+}
 
 /**
  * Сложная (4 балла)
@@ -247,7 +282,20 @@ fun decimal(digits: List<Int>, base: Int): Int = TODO()
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, str.toInt(base)), запрещается.
  */
-fun decimalFromString(str: String, base: Int): Int = TODO()
+fun decimalFromString(str: String, base: Int): Int {
+    val letters = mutableListOf<Char>()
+    for (char in 'a'..'z') letters.add(char)
+    val str2 = str.reversed()
+    var s = 0
+    for (i in str2.indices) {
+        if (str2[i] in letters) {
+            s += (letters.indexOf(str2[i]) + 10) * base.toDouble().pow(i).toInt()
+        } else {
+            s += (str2[i].digitToInt()) * base.toDouble().pow(i).toInt()
+        }
+    }
+    return s
+}
 
 /**
  * Сложная (5 баллов)

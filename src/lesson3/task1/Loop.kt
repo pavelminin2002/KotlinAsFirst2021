@@ -104,19 +104,6 @@ fun fib(n: Int): Int {
     }
     return x2
 }
-//{
-//    var x1 = 1
-//    var x2 = 1
-//    var k = 0
-//    var summa = 2
-//    while (n - 2 > k) {
-//        summa = x1 + x2
-//        x1 = x2
-//        x2 = summa
-//        k++
-//    }
-//    return x2
-//}
 /**
  * Простая (2 балла)
  *
@@ -142,20 +129,8 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = if (minDivisor(n) == n) 1 else n / minDivisor(n)
-//{
-//    var m = 0
-//    for (i in 2..sqrt(n.toDouble()).toInt()) {
-//        if (n % i == 0) {
-//            m = n / i
-//            break
-//        }
-//    }
-//    if (m == 0) {
-//        m = 1
-//    }
-//    return m
-//}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
+
 /**
  * Простая (2 балла)
  *
@@ -191,23 +166,12 @@ fun collatzSteps(x: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     var x1 = m
     var x2 = n
-    var p = 0
     while (x1 != 0 && x2 != 0) {
         if (x1 > x2) x1 %= x2 else x2 %= x1
     }
-    p = max(x1, x2)
+    val p: Int = max(x1, x2)
     return (m * n) / p
 }
-
-//{
-//    var k = 0
-//    var l = true
-//    while (l) {
-//        k++
-//        if (k % m == 0 && k % n == 0) l = false
-//    }
-//    return k
-//}
 /**
  * Средняя (3 балла)
  *
@@ -319,17 +283,9 @@ fun squareSequenceDigit(n: Int): Int {
             break
         }
     }
-    return i1(s, n, number)
-
+    return RightFigure(s, n, number)
 }
-//if (s == n) return number % 10
-//    else {
-//        while (s != n) {
-//            number /= 10
-//            s -= 1
-//        }
-//        return number % 10
-//    }
+
 /**
  * Сложная (5 баллов)
  *
@@ -353,10 +309,10 @@ fun fibSequenceDigit(n: Int): Int {
             break
         }
     }
-    return i1(s, n, number)
+    return RightFigure(s, n, number)
 }
 
-private fun i1(s: Int, n: Int, number: Int): Int {
+private fun RightFigure(s: Int, n: Int, number: Int): Int {
     var s1 = s
     var number1 = number
     while (s1 != n) {
