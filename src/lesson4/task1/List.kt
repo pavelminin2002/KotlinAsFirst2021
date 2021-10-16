@@ -314,4 +314,46 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val number1to9 = listOf(
+        "один", "два", "три",
+        "четыре", "пять", "шесть",
+        "семь", "восемь", "девять"
+    )
+    val number11to19 = listOf(
+        "одиннадцать", "двенадцать", "тринадцать",
+        "четырнадцать", "пятнадцать", "шестнадцать",
+        "семнадцать", "восемнадцать", "девятнадцать"
+    )
+    val dozens10to90 = listOf(
+        "десять", "двадцать", "тридцать",
+        "сорок", "пятьдесят", "шестьдесят",
+        "семьдесят", "восемьдесят", "девяносто"
+    )
+    val hundreds100to900 = listOf(
+        "сто", "двести", "триста",
+        "четыреста", "пятьсот", "шестьсот",
+        "семьсот", "восемьсот", "девятьсот"
+    )
+    val number = listOf(n / 1000, n % 1000)
+    val result = mutableListOf<String>()
+    for (i in number.indices) {
+        if (number[i] == 0) continue
+        if (number[i] / 100 in 1..9) result.add(hundreds100to900[number[i] / 100 - 1])
+        if (number[i] % 100 in 11..19) {
+            result.add(number11to19[number[i] % 100 - 11])
+        } else if (number[i] % 100 / 10 in 1..9) result.add(dozens10to90[number[i] % 100 / 10 - 1])
+        if (i == 0 && number[i] != 0) {
+            if ((number[i] % 100 !in 11..19) && (number[i] % 10 in 1..9)) {
+                when (number[i] % 10) {
+                    1 -> result.add("одна тысяча")
+                    2 -> result.add("две тысячи")
+                    3 -> result.add("три тысячи")
+                    4 -> result.add("четыре тысячи")
+                    else -> result.add("${number1to9[number[i] % 10 - 1]} тысяч")
+                }
+            } else result.add("тысяч")
+        } else if ((number[i] % 100 !in 11..19) && (number[i] % 10 in 1..9)) result.add(number1to9[number[i] % 10 - 1])
+    }
+    return result.joinToString(separator = " ")
+}
