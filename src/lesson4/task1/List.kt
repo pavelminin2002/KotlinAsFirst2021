@@ -355,5 +355,6 @@ fun russian(n: Int): String {
             } else result.add("тысяч")
         } else if ((number[i] % 100 !in 11..19) && (number[i] % 10 in 1..9)) result.add(number1to9[number[i] % 10 - 1])
     }
+
     return result.joinToString(separator = " ")
 }
