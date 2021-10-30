@@ -314,4 +314,49 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val number1to9 = listOf(
+        "один", "два", "три",
+        "четыре", "пять", "шесть",
+        "семь", "восемь", "девять"
+    )
+    val number11to19 = listOf(
+        "одиннадцать", "двенадцать", "тринадцать",
+        "четырнадцать", "пятнадцать", "шестнадцать",
+        "семнадцать", "восемнадцать", "девятнадцать"
+    )
+    val dozens10to90 = listOf(
+        "десять", "двадцать", "тридцать",
+        "сорок", "пятьдесят", "шестьдесят",
+        "семьдесят", "восемьдесят", "девяносто"
+    )
+    val hundreds100to900 = listOf(
+        "сто", "двести", "триста",
+        "четыреста", "пятьсот", "шестьсот",
+        "семьсот", "восемьсот", "девятьсот"
+    )
+    val numbers = listOf(n / 1000, n % 1000)
+    val result = mutableListOf<String>()
+    for (i in numbers.indices) {
+        if (numbers[i] == 0) continue
+        val residual_100 = numbers[i] % 100
+        val wholePart_100 = numbers[i] / 100
+        if (wholePart_100 in 1..9) result.add(hundreds100to900[wholePart_100 - 1])
+        if (residual_100 in 11..19) {
+            result.add(number11to19[residual_100 - 11])
+        } else if (residual_100 / 10 in 1..9) result.add(dozens10to90[residual_100 / 10 - 1])
+        if (i == 0) {
+            if ((residual_100 !in 11..19) && (numbers[i] % 10 in 1..9)) {
+                when (numbers[i] % 10) {
+                    1 -> result.add("одна тысяча")
+                    2 -> result.add("две тысячи")
+                    3 -> result.add("три тысячи")
+                    4 -> result.add("четыре тысячи")
+                    else -> result.add("${number1to9[numbers[i] % 10 - 1]} тысяч")
+                }
+            } else result.add("тысяч")
+        } else if ((residual_100 !in 11..19) && (numbers[i] % 10 in 1..9)) result.add(number1to9[numbers[i] % 10 - 1])
+    }
+
+    return result.joinToString(separator = " ")
+}
