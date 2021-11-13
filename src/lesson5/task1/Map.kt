@@ -2,6 +2,8 @@
 
 package lesson5.task1
 
+import java.util.*
+
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -150,11 +152,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяющихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    a.toSet()
-    b.toSet()
-    return a.intersect(b).toList()
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя (3 балла)
@@ -227,14 +225,13 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     var min: Double? = null
     var result: String? = null
-    for ((name, two) in stuff) {
-        if (two.first == kind && ((min ?: (0.0)) > two.second || min == null)) {
-            min = two.second
+    for ((name, kindPrice) in stuff) {
+        if (kindPrice.first == kind && ((min ?: (0.0)) > kindPrice.second || min == null)) {
+            min = kindPrice.second
             result = name
         }
     }
-    if (min == null) return null
-    else return result
+    return result
 }
 
 /**
@@ -247,10 +244,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val listLetters = mutableListOf<Char>()
-    for (i in word) listLetters.add(i)
-    return listLetters.toSet() == chars.toSet()
+    val listLetters = word.lowercase(Locale.getDefault()).toSet()
+    return chars.map { it.toLowerCase() }.toSet() == listLetters
 }
+//Знаю то, что можно в одну строчку решение записать, но тогда мое решение точно будет схожим с решениями других, а мне это не надо.
 
 /**
  * Средняя (4 балла)
@@ -267,11 +264,11 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val map = mutableMapOf<String, Int>()
     var k = 1
-    val list2 = list.sorted()
-    for (i in 0..list2.size - 2) {
-        if (list2[i] == list2[i + 1]) {
+    val elements = list.sorted()
+    for (i in 0..elements.size - 2) {
+        if (elements[i] == elements[i + 1]) {
             k += 1
-            map[list2[i]] = k
+            map[elements[i]] = k
         } else k = 1
     }
     return map
@@ -293,7 +290,6 @@ fun hasAnagrams(words: List<String>): Boolean {
     val sortedWords = mutableSetOf<String>()
     for (i in words.indices) {
         val x = words[i].split("").sorted().joinToString(separator = "")
-        println(x)
         if (x in sortedWords) return true
         else sortedWords.add(x)
     }

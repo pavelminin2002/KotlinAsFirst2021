@@ -224,11 +224,11 @@ fun convert(n: Int, base: Int): List<Int> {
     while (q >= base) {
         q = nn / base
         b = nn % base
-        result.add(0, b)
+        result.add(b)
         nn = q
     }
-    result.add(0, q)
-    return result
+    result.add(q)
+    return result.reversed()
 }
 
 /**
@@ -242,17 +242,21 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
+fun chars(x: MutableList<Char>): MutableList<Char> {
+    for (char in 'a'..'z') x.add(char)
+    return x
+}
+
 fun convertToString(n: Int, base: Int): String {
-    val letters = mutableListOf<Char>()
-    for (char in 'a'..'z') letters.add(char)
-    val result = convert(n, base)
-    val result2 = mutableListOf<Any>()
-    for (i in result.indices) {
-        if (result[i] > 9) {
-            result2.add(letters[(result[i] - 10)])
-        } else result2.add(result[i])
+    val letters = chars(mutableListOf())
+    val convertedNumber = convert(n, base)
+    val result = mutableListOf<Any>()
+    for (i in convertedNumber.indices) {
+        if (convertedNumber[i] > 9) {
+            result.add(letters[(convertedNumber[i] - 10)])
+        } else result.add(convertedNumber[i])
     }
-    return result2.joinToString(separator = "")
+    return result.joinToString(separator = "")
 }
 
 
@@ -264,9 +268,9 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    val digits2 = digits.reversed()
+    val shadowing = digits.reversed()
     var s = 0
-    for (i in digits2.indices) s += digits2[i] * base.toDouble().pow(i).toInt()
+    for (i in shadowing.indices) s += shadowing[i] * base.toDouble().pow(i).toInt()
     return s
 }
 
@@ -283,18 +287,14 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val letters = mutableListOf<Char>()
-    for (char in 'a'..'z') letters.add(char)
-    val str2 = str.reversed()
-    var s = 0
-    for (i in str2.indices) {
-        if (str2[i] in letters) {
-            s += (letters.indexOf(str2[i]) + 10) * base.toDouble().pow(i).toInt()
-        } else {
-            s += (str2[i].digitToInt()) * base.toDouble().pow(i).toInt()
-        }
+    val letters = chars(mutableListOf())
+    val x = mutableListOf<Int>()
+    for (i in str.indices) {
+        if (str[i] in letters) {
+            x.add(letters.indexOf(str[i]) + 10)
+        } else x.add(str[i].digitToInt())
     }
-    return s
+    return decimal(x, base)
 }
 
 /**
@@ -335,26 +335,29 @@ fun russian(n: Int): String {
         "четыреста", "пятьсот", "шестьсот",
         "семьсот", "восемьсот", "девятьсот"
     )
-    val number = listOf(n / 1000, n % 1000)
+    val numberList = listOf(n / 1000, n % 1000)
     val result = mutableListOf<String>()
-    for (i in number.indices) {
-        if (number[i] == 0) continue
-        if (number[i] / 100 in 1..9) result.add(hundreds100to900[number[i] / 100 - 1])
-        if (number[i] % 100 in 11..19) {
-            result.add(number11to19[number[i] % 100 - 11])
-        } else if (number[i] % 100 / 10 in 1..9) result.add(dozens10to90[number[i] % 100 / 10 - 1])
-        if (i == 0 && number[i] != 0) {
-            if ((number[i] % 100 !in 11..19) && (number[i] % 10 in 1..9)) {
-                when (number[i] % 10) {
+    for (i in numberList.indices) {
+        if (numberList[i] == 0) continue
+        val remainingFrom100 = numberList[i] % 100
+        val integerFrom100 = numberList[i] / 100
+        if (integerFrom100 in 1..9) result.add(hundreds100to900[integerFrom100 - 1])
+        if (remainingFrom100 in 11..19) {
+            result.add(number11to19[remainingFrom100 - 11])
+            if (i == 0) result.add("тысяч")
+            continue
+        } else if (remainingFrom100 / 10 in 1..9) result.add(dozens10to90[remainingFrom100 / 10 - 1])
+        if (i == 0) {
+            if (numberList[i] % 10 in 1..9) {
+                when (numberList[i] % 10) {
                     1 -> result.add("одна тысяча")
                     2 -> result.add("две тысячи")
                     3 -> result.add("три тысячи")
                     4 -> result.add("четыре тысячи")
-                    else -> result.add("${number1to9[number[i] % 10 - 1]} тысяч")
+                    else -> result.add("${number1to9[numberList[i] % 10 - 1]} тысяч")
                 }
             } else result.add("тысяч")
-        } else if ((number[i] % 100 !in 11..19) && (number[i] % 10 in 1..9)) result.add(number1to9[number[i] % 10 - 1])
+        } else if (numberList[i] % 10 in 1..9) result.add(number1to9[numberList[i] % 10 - 1])
     }
-
     return result.joinToString(separator = " ")
 }
