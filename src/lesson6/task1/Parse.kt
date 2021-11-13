@@ -191,7 +191,7 @@ fun firstDuplicateIndex(str: String): Int {
         if (words[i].toLowerCase() == words[i + 1].toLowerCase()) return result + 1
         result += words[i].length + 1
     }
-    return result
+    return -1
 }
 
 /**
