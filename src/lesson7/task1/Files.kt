@@ -539,51 +539,53 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val result = (lhv / rhv).toString()
-    val rem = lhv % rhv
-    val znach = mutableListOf<String>()
-    val ubavit = mutableListOf<String>()
-    val ostatok = mutableListOf<String>()
+    val finalRem = lhv % rhv
+    val meanings = mutableListOf<String>()
+    val negations = mutableListOf<String>()
+    val remnants = mutableListOf<String>()
     var end = 1
     while (lhv.toString().substring(0, end).toInt() < rhv * result[0].toString().toInt()) {
         end += 1
     }
-    ubavit.add((rhv * result[0].toString().toInt()).toString())
+    negations.add((rhv * result[0].toString().toInt()).toString())
     if (end != lhv.toString().length) {
-        val lhv2 = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString()
-            .toInt()).toString() + lhv.toString()[end].toString()
-        ostatok.add((lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString())
-        znach.add(lhv2)
+        var meaning = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString() +
+                lhv.toString()[end].toString()
+        remnants.add((lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString())
+        meanings.add(meaning)
         var x = end + 1
         var i = 1
         while (x < lhv.toString().length) {
-            znach.add((lhv2.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString())
-            ubavit.add((rhv * result[i].toString().toInt()).toString())
-            ostatok.add((lhv2.toInt() - rhv * result[i].toString().toInt()).toString())
+            meanings.add((meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString())
+            negations.add((rhv * result[i].toString().toInt()).toString())
+            remnants.add((meaning.toInt() - rhv * result[i].toString().toInt()).toString())
+            meaning = (meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString()
             x++
             i++
         }
-        ubavit.add((rhv * result[i].toString().toInt()).toString())
-    } else ubavit.add((rhv * result.toString().toInt()).toString())
-    for ((index, element) in ubavit.withIndex()) ubavit[index] = "-$element"
+        negations.add((rhv * result[i].toString().toInt()).toString())
+    } else negations.add((rhv * result.toInt()).toString())
+    for ((index, element) in negations.withIndex()) negations[index] = "-$element"
 
     File(outputName).bufferedWriter().use {
         it.write(" $lhv | $rhv\n")
-        it.write(ubavit[0] + " ".repeat(lhv.toString().length - ubavit[0].length + 1) + "   $result\n")
-        it.write("-".repeat(ubavit[0].length) + "\n")
+        it.write(negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+        it.write("-".repeat(negations[0].length) + "\n")
         var probel = 0
-        for (i in znach.indices) {
-            probel += ubavit[i].length - ostatok[i].length
-            it.write(" ".repeat(probel) + znach[i] + "\n")
-            if (ubavit[i + 1].length > znach[i].length) probel--
-            it.write(" ".repeat(probel) + ubavit[i + 1] + "\n")
-            it.write(" ".repeat(probel) + "-".repeat(ubavit[i + 1].length) + "\n")
+        for (i in meanings.indices) {
+            probel += negations[i].length - remnants[i].length
+            it.write(" ".repeat(probel) + meanings[i] + "\n")
+            if (negations[i + 1].length > meanings[i].length) probel--
+            it.write(" ".repeat(probel) + negations[i + 1] + "\n")
+            it.write(" ".repeat(probel) + "-".repeat(negations[i + 1].length) + "\n")
         }
         if (probel == 0) {
-            it.write(" ".repeat(ubavit[0].length - rem.toString().length) + "$rem")
+            it.write(" ".repeat(negations[0].length - finalRem.toString().length) + "$finalRem")
         } else {
-            probel += ubavit[ubavit.size - 1].length - rem.toString().length
-            it.write(" ".repeat(probel) + "$rem")
+            probel += negations[negations.size - 1].length - finalRem.toString().length
+            it.write(" ".repeat(probel) + "$finalRem")
         }
 
     }
 }
+
