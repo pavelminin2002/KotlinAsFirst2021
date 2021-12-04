@@ -550,7 +550,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             end += 1
         }
         negations.add((rhv * result[0].toString().toInt()).toString())
-        if (end != lhv.toString().length) {
+        if (result.length != 1) {
             var meaning = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString() +
                     lhv.toString()[end].toString() // значение после разности и прибавления к нему цифры из lhv
             remnants.add((lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString())
@@ -573,13 +573,14 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for ((index, element) in negations.withIndex()) negations[index] = "-$element"
         // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
         File(outputName).bufferedWriter().use {
+            var probel = 0
+            if (lhv.toString().length == negations[0].length) probel += 1
             it.write(" $lhv | $rhv\n")
             print(" $lhv | $rhv\n")
-            it.write(negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
-            print(negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
-            it.write("-".repeat(negations[0].length) + "\n")
-            print("-".repeat(negations[0].length) + "\n")
-            var probel = 0 // изменяющееся количество пробелов
+            it.write(" ".repeat(probel) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+            print(" ".repeat(probel) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+            it.write(" ".repeat(probel) + "-".repeat(negations[0].length) + "\n")
+            print(" ".repeat(probel) + "-".repeat(negations[0].length) + "\n")
             // после внесения основы можем приступить к внесению последующих операции
             var proverka = false
             for (i in meanings.indices) {
@@ -606,7 +607,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             }
 
         }
-    } catch (e: IllegalArgumentException){
+    } catch (e: IllegalArgumentException) {
         throw IllegalArgumentException("$lhv $rhv")
     }
 }
