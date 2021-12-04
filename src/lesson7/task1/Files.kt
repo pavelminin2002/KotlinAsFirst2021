@@ -2,7 +2,10 @@
 
 package lesson7.task1
 
+
 import java.io.File
+import kotlin.math.max
+
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -63,7 +66,19 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    TODO()
+    val inputFil = File(inputName)
+    val outputFil = File(outputName).bufferedWriter()
+    for (line in inputFil.readLines()) {
+        if (line.isEmpty()) {
+            outputFil.newLine()
+            continue
+        }
+        if (line[0] != '_') {
+            outputFil.write(line)
+            outputFil.newLine()
+        }
+    }
+    outputFil.close()
 }
 
 /**
@@ -108,7 +123,19 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val replacement = mapOf("ы" to "и", "я" to "а", "ю" to "у", "Ы" to "И", "Я" to "А", "Ю" to "У")
+    val letters = listOf("ж", "ч", "ш", "щ")
+    val outputF = File(outputName).bufferedWriter()
+    for (line in File(inputName).readLines()) {
+        outputF.write(line[0].toString())
+        for (letter in 1..line.length - 1) {
+            if ((line[letter].toString() in replacement) && (line[letter - 1].toString().toLowerCase() in letters))
+                outputF.write(replacement[line[letter].toString()])
+            else outputF.write(line[letter].toString())
+        }
+        outputF.newLine()
+    }
+    outputF.close()
 }
 
 /**
@@ -129,7 +156,20 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val text = mutableListOf<String>()
+    var maxLen = 0
+    for (line in File(inputName).readLines()) {
+        val newLine = line.trim()
+        text.add(newLine)
+        maxLen = max(maxLen, newLine.length)
+    }
+    File(outputName).bufferedWriter().use {
+        for (line in text) {
+            val currentLen = line.length
+            val res = String.format("%${(maxLen + currentLen) / 2}s", line) + "\n"
+            it.write(res)
+        }
+    }
 }
 
 /**
@@ -160,7 +200,40 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    TODO()
+    val sizeOfList = mutableListOf<Int>()
+    val map = mutableMapOf<Int, List<String>>()
+    var k = -1
+    var maxLength = 0
+    for (list in File(inputName).readLines()) {
+        k += 1
+        val words = list.trim().split(" ").filter { it != "" }
+        var lengthOfWords = words.fold(0) { x, it -> x + it.length }
+        if (words.isNotEmpty()) {
+            lengthOfWords += words.size - 1
+            map[k] = words
+        } else map[k] = listOf("")
+        sizeOfList.add(lengthOfWords)
+        maxLength = max(maxLength, lengthOfWords)
+    }
+    File(outputName).bufferedWriter().use {
+        for ((key, value) in map.entries) {
+            if (value.size == 1) {
+                it.write(value[0])
+                it.newLine()
+                continue
+            }
+            val numberOfSpaces = value.size - 1
+            val t = maxLength - sizeOfList[key]
+            val wholeOfSpaces = t / numberOfSpaces
+            var remnantOfSpaces = t % numberOfSpaces
+            for (i in 0..value.size - 2) {
+                it.write(value[i] + " ".repeat(1 + wholeOfSpaces + if (remnantOfSpaces > 0) 1 else 0))
+                remnantOfSpaces -= 1
+            }
+            it.write(value.last())
+            it.newLine()
+        }
+    }
 }
 
 /**
@@ -465,6 +538,52 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
-}
+    val result = (lhv / rhv).toString()
+    val rem = lhv % rhv
+    val znach = mutableListOf<String>()
+    val ubavit = mutableListOf<String>()
+    val ostatok = mutableListOf<String>()
+    var end = 1
+    while (lhv.toString().substring(0, end).toInt() < rhv * result[0].toString().toInt()) {
+        end += 1
+    }
+    ubavit.add((rhv * result[0].toString().toInt()).toString())
+    if (end != lhv.toString().length) {
+        val lhv2 = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString()
+            .toInt()).toString() + lhv.toString()[end].toString()
+        ostatok.add((lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString())
+        znach.add(lhv2)
+        var x = end + 1
+        var i = 1
+        while (x < lhv.toString().length) {
+            znach.add((lhv2.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString())
+            ubavit.add((rhv * result[i].toString().toInt()).toString())
+            ostatok.add((lhv2.toInt() - rhv * result[i].toString().toInt()).toString())
+            x++
+            i++
+        }
+        ubavit.add((rhv * result[i].toString().toInt()).toString())
+    } else ubavit.add((rhv * result.toString().toInt()).toString())
+    for ((index, element) in ubavit.withIndex()) ubavit[index] = "-$element"
 
+    File(outputName).bufferedWriter().use {
+        it.write(" $lhv | $rhv\n")
+        it.write(ubavit[0] + " ".repeat(lhv.toString().length - ubavit[0].length + 1) + "   $result\n")
+        it.write("-".repeat(ubavit[0].length) + "\n")
+        var probel = 0
+        for (i in znach.indices) {
+            probel += ubavit[i].length - ostatok[i].length
+            it.write(" ".repeat(probel) + znach[i] + "\n")
+            if (ubavit[i + 1].length > znach[i].length) probel--
+            it.write(" ".repeat(probel) + ubavit[i + 1] + "\n")
+            it.write(" ".repeat(probel) + "-".repeat(ubavit[i + 1].length) + "\n")
+        }
+        if (probel == 0) {
+            it.write(" ".repeat(ubavit[0].length - rem.toString().length) + "$rem")
+        } else {
+            probel += ubavit[ubavit.size - 1].length - rem.toString().length
+            it.write(" ".repeat(probel) + "$rem")
+        }
+
+    }
+}

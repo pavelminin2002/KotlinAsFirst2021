@@ -136,7 +136,7 @@ fun bestHighJump(jumps: String): Int {
     var finalResult = -1
     val attempts = jumps.split(" ")
     if (attempts.size % 2 == 0) {
-        val designations = listOf('+', '-', '%')
+        val designations = setOf('+', '-', '%')
         for (i in attempts.indices step 2) {
             val intermediateResult = attempts[i].toIntOrNull() ?: return -1
             if (attempts[i + 1].all { it in designations }) {
@@ -160,6 +160,7 @@ fun plusMinus(expression: String): Int {
     val partsOfExpression = expression.split(" ")
     var result = 0
     var token = 1
+    if (partsOfExpression.size % 2 == 0) throw IllegalArgumentException()
     for (i in partsOfExpression.indices) {
         if (i % 2 == 0) {
             if (partsOfExpression[i].all { it in '0'..'9' }) {
