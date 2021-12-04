@@ -540,9 +540,9 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val result = (lhv / rhv).toString()
     val finalRem = lhv % rhv
-    val meanings = mutableListOf<String>()
-    val negations = mutableListOf<String>()
-    val remnants = mutableListOf<String>()
+    val meanings = mutableListOf<String>() // список значений которые получатся после очередной разности
+    val negations = mutableListOf<String>() // список значений на которые будут убавляться значения из списка meaning
+    val remnants = mutableListOf<String>() // список остатков
     var end = 1
     while (lhv.toString().substring(0, end).toInt() < rhv * result[0].toString().toInt()) {
         end += 1
@@ -550,13 +550,15 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     negations.add((rhv * result[0].toString().toInt()).toString())
     if (end != lhv.toString().length) {
         var meaning = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString() +
-                lhv.toString()[end].toString()
+                lhv.toString()[end].toString() // значение после разности и прибавления к нему цифры из lhv
         remnants.add((lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString())
         meanings.add(meaning)
         var x = end + 1
         var i = 1
         while (x < lhv.toString().length) {
-            meanings.add((meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString())
+            meanings.add(
+                (meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString()
+            )
             negations.add((rhv * result[i].toString().toInt()).toString())
             remnants.add((meaning.toInt() - rhv * result[i].toString().toInt()).toString())
             meaning = (meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString()
@@ -566,24 +568,38 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         negations.add((rhv * result[i].toString().toInt()).toString())
     } else negations.add((rhv * result.toInt()).toString())
     for ((index, element) in negations.withIndex()) negations[index] = "-$element"
-
+    // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
     File(outputName).bufferedWriter().use {
         it.write(" $lhv | $rhv\n")
+        print(" $lhv | $rhv\n")
         it.write(negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+        print(negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
         it.write("-".repeat(negations[0].length) + "\n")
-        var probel = 0
+        print("-".repeat(negations[0].length) + "\n")
+        var probel = 0 // изменяющееся количество пробелов
+        // после внесения основы можем приступить к внесению последующих операции
+        var proverka = false
         for (i in meanings.indices) {
+            proverka = false
             probel += negations[i].length - remnants[i].length
             it.write(" ".repeat(probel) + meanings[i] + "\n")
-            if (negations[i + 1].length > meanings[i].length) probel--
+            print(" ".repeat(probel) + meanings[i] + "\n")
+            if (negations[i + 1].length > meanings[i].length) {
+                probel--
+                proverka = true
+            } // если уменьшаемое и вычитаемое по количеству цифр одинаковы, то минус должен стоять левее
             it.write(" ".repeat(probel) + negations[i + 1] + "\n")
+            print(" ".repeat(probel) + negations[i + 1] + "\n")
             it.write(" ".repeat(probel) + "-".repeat(negations[i + 1].length) + "\n")
+            print(" ".repeat(probel) + "-".repeat(negations[i + 1].length) + "\n")
         }
-        if (probel == 0) {
+        if (probel == 0 && !proverka) {
             it.write(" ".repeat(negations[0].length - finalRem.toString().length) + "$finalRem")
+            println(" ".repeat(negations[0].length - finalRem.toString().length) + "$finalRem")
         } else {
             probel += negations[negations.size - 1].length - finalRem.toString().length
             it.write(" ".repeat(probel) + "$finalRem")
+            println(" ".repeat(probel) + "$finalRem")
         }
 
     }
