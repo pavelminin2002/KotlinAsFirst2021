@@ -571,13 +571,22 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
     File(outputName).bufferedWriter().use {
         var space = 0
-        if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
         it.write(" $lhv | $rhv\n")
         print(" $lhv | $rhv\n")
-        it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
-        print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
-        it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
-        print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+        if (negations[0] == "-0" && lhv.toString().length > 2) {
+            space += lhv.toString().length - 1
+            it.write(" ".repeat(space) + negations[0] + "   $result\n")
+            print(" ".repeat(space) + negations[0] + "   $result\n")
+            space -= lhv.toString().length - 2
+            it.write(" " + "-".repeat(lhv.toString().length) + "\n")
+            print(" " + "-".repeat(lhv.toString().length) + "\n")
+        } else {
+            if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
+            it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+            print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+            it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+            print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+        }
         var flag = true
         // после внесения основы можем приступить к внесению последующих операции
         for (i in meanings.indices) {
@@ -603,7 +612,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
                 print(" ".repeat(space) + finalRem + "\n")
                 flag = false
             }
-
         }
         //для случаев когда была лишь одна разность
         if (flag) {
@@ -614,6 +622,15 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
     }
 }
+
+//        var space = 0
+//        if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
+//        it.write(" $lhv | $rhv\n")
+//        print(" $lhv | $rhv\n")
+//        it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+//        print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+//        it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+//        print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
 
 
 //File(outputName).bufferedWriter().use {
