@@ -545,9 +545,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val negations = mutableListOf<String>() // список значений на которые будут убавляться значения из списка meaning
     val remnants = mutableListOf<String>() // список остатков
     var end = 1
-    while (lhv.toString().substring(0, end).toInt() < rhv * result[0].toString().toInt()) {
-        end += 1
-    }
+    while (lhv.toString().substring(0, end).toInt() < rhv * result[0].toString().toInt()) end += 1
     negations.add((rhv * result[0].toString().toInt()).toString())
     if (result.length != 1) {
         var meaning = (lhv.toString().substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString() +
@@ -562,12 +560,13 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             )
             negations.add((rhv * result[i].toString().toInt()).toString())
             remnants.add((meaning.toInt() - rhv * result[i].toString().toInt()).toString())
-            meaning = (meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString()
+            meaning =
+                (meaning.toInt() - rhv * result[i].toString().toInt()).toString() + lhv.toString()[x].toString()
             x++
             i++
         }
         negations.add((rhv * result[i].toString().toInt()).toString())
-    }
+    } else negations.add((rhv * result.toInt()).toString())
     for ((index, element) in negations.withIndex()) negations[index] = "-$element"
     // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
     File(outputName).bufferedWriter().use {
@@ -575,26 +574,33 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
         it.write(" $lhv | $rhv\n")
         print(" $lhv | $rhv\n")
-        it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+        it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+        print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
         it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+        print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
         var flag = true
         // после внесения основы можем приступить к внесению последующих операции
         for (i in meanings.indices) {
             if (i == 0) space += negations[0].length - remnants[0].length
             else space += meanings[i - 1].length - remnants[i].length
             it.write(" ".repeat(space) + meanings[i] + "\n")
+            print(" ".repeat(space) + meanings[i] + "\n")
             space += meanings[i].length - negations[i + 1].length
             it.write(" ".repeat(space) + negations[i + 1] + "\n")
+            print(" ".repeat(space) + negations[i + 1] + "\n")
             if (meanings[i].length > negations[i + 1].length) {
                 space -= meanings[i].length - negations[i + 1].length
                 it.write(" ".repeat(space) + "-".repeat(meanings[i].length) + "\n")
+                print(" ".repeat(space) + "-".repeat(meanings[i].length) + "\n")
             } else {
                 it.write(" ".repeat(space) + "-".repeat(negations[i + 1].length) + "\n")
+                print(" ".repeat(space) + "-".repeat(negations[i + 1].length) + "\n")
                 if (negations[i + 1].length > meanings[i].length) space++
             }
             if (i == meanings.size - 1) {
                 space += meanings[i].length - finalRem.length
                 it.write(" ".repeat(space) + finalRem + "\n")
+                print(" ".repeat(space) + finalRem + "\n")
                 flag = false
             }
 
@@ -604,8 +610,45 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             if (lhv.toString().length < negations[0].length) space++
             space += lhv.toString().length - finalRem.length
             it.write(" ".repeat(space) + finalRem + "\n")
+            print(" ".repeat(space) + finalRem + "\n")
         }
     }
 }
 
+
+//File(outputName).bufferedWriter().use {
+//        var probel = 0
+//        if (lhv.toString().length == negations[0].length && result.length == 1) probel += 1
+//        it.write(" $lhv | $rhv\n")
+//        print(" $lhv | $rhv\n")
+//        it.write(" ".repeat(probel) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+//        print(" ".repeat(probel) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1) + "   $result\n")
+//        it.write(" ".repeat(probel) + "-".repeat(negations[0].length) + "\n")
+//        print(" ".repeat(probel) + "-".repeat(negations[0].length) + "\n")
+//        // после внесения основы можем приступить к внесению последующих операции
+//        var proverka = false
+//        for (i in meanings.indices) {
+//            proverka = false
+//            probel += negations[i].length - remnants[i].length
+//            it.write(" ".repeat(probel) + meanings[i] + "\n")
+//            print(" ".repeat(probel) + meanings[i] + "\n")
+//            if (negations[i + 1].length > meanings[i].length) {
+//                probel--
+//                proverka = true
+//            } // если уменьшаемое и вычитаемое по количеству цифр одинаковы, то минус должен стоять левее
+//            it.write(" ".repeat(probel) + negations[i + 1] + "\n")
+//            print(" ".repeat(probel) + negations[i + 1] + "\n")
+//            it.write(" ".repeat(probel) + "-".repeat(negations[i + 1].length) + "\n")
+//            print(" ".repeat(probel) + "-".repeat(negations[i + 1].length) + "\n")
+//        }
+//        if (probel == 0 && !proverka) {
+//            it.write(" ".repeat(negations[0].length - finalRem.toString().length) + "$finalRem")
+//            println(" ".repeat(negations[0].length - finalRem.toString().length) + "$finalRem")
+//        } else {
+//            probel += negations[negations.size - 1].length - finalRem.toString().length
+//            it.write(" ".repeat(probel) + "$finalRem")
+//            println(" ".repeat(probel) + "$finalRem")
+//        }
+//
+//    }
 
