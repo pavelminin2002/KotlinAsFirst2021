@@ -571,16 +571,18 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
     File(outputName).bufferedWriter().use {
         var space = 0
-        it.write(" $lhv | $rhv\n")
-        print(" $lhv | $rhv\n")
         if (negations[0] == "-0" && lhv.toString().length > 2) {
-            space += lhv.toString().length - 1
+            it.write("$lhv | $rhv\n")
+            print("$lhv | $rhv\n")
+            space += lhv.toString().length - 2
             it.write(" ".repeat(space) + negations[0] + "   $result\n")
             print(" ".repeat(space) + negations[0] + "   $result\n")
             space -= lhv.toString().length - 2
-            it.write(" " + "-".repeat(lhv.toString().length) + "\n")
-            print(" " + "-".repeat(lhv.toString().length) + "\n")
+            it.write("-".repeat(lhv.toString().length) + "\n")
+            print("-".repeat(lhv.toString().length) + "\n")
         } else {
+            it.write(" $lhv | $rhv\n")
+            print(" $lhv | $rhv\n")
             if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
             it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
             print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
