@@ -4,6 +4,7 @@ package lesson7.task1
 
 
 import java.io.File
+import kotlin.math.abs
 import kotlin.math.max
 
 
@@ -581,13 +582,22 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             it.write("-".repeat(lhv.toString().length) + "\n")
             print("-".repeat(lhv.toString().length) + "\n")
         } else {
-            it.write(" $lhv | $rhv\n")
-            print(" $lhv | $rhv\n")
-            if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
-            it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
-            print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
-            it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
-            print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+            if (meanings.isNotEmpty() && remnants.size + negations[0].length == lhv.toString().length) {
+                it.write("$lhv | $rhv\n")
+                print("$lhv | $rhv\n")
+                it.write(negations[0] + " ".repeat(lhv.toString().length - negations[0].length) + "   $result\n")
+                print(negations[0] + " ".repeat(lhv.toString().length - negations[0].length) + "   $result\n")
+                it.write("-".repeat(negations[0].length) + "\n")
+                print("-".repeat(negations[0].length) + "\n")
+            } else {
+                if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
+                it.write(" $lhv | $rhv\n")
+                print(" $lhv | $rhv\n")
+                it.write(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+                print(" ".repeat(space) + negations[0] + " ".repeat(lhv.toString().length - negations[0].length + 1 - space) + "   $result\n")
+                it.write(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+                print(" ".repeat(space) + "-".repeat(negations[0].length) + "\n")
+            }
         }
         var flag = true
         // после внесения основы можем приступить к внесению последующих операции
@@ -623,7 +633,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             print(" ".repeat(space) + finalRem + "\n")
         }
     }
-}
+}//Пока не пишите комментарии к этой программе ! Я еще буду ее сокращать, ресабмичу для проверки
 
 //        var space = 0
 //        if (lhv.toString().length == negations[0].length && result.length == 1) space += 1
