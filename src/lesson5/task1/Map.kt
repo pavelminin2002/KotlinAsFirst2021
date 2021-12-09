@@ -196,7 +196,6 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val stockList = mutableMapOf<String, MutableList<Double>>()
     val result = mutableMapOf<String, Double>()
-    if (stockPrices.isEmpty()) return result
     for ((key, value) in stockPrices) {
         if (key in stockList) stockList[key]!!.add(value)
         else stockList[key] = mutableListOf(value)
@@ -244,7 +243,7 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    val listLetters = word.lowercase(Locale.getDefault()).toSet() - ' '
+    val listLetters = word.lowercase().toSet()
     if (listLetters.isEmpty()) return true
     return chars.map { it.toLowerCase() }.toSet().intersect(listLetters) == listLetters
 }
