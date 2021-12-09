@@ -66,19 +66,7 @@ fun alignFile(inputName: String, lineLength: Int, outputName: String) {
  * Подчёркивание в середине и/или в конце строк значения не имеет.
  */
 fun deleteMarked(inputName: String, outputName: String) {
-    val inputFil = File(inputName)
-    val outputFil = File(outputName).bufferedWriter()
-    for (line in inputFil.readLines()) {
-        if (line.isEmpty()) {
-            outputFil.newLine()
-            continue
-        }
-        if (line[0] != '_') {
-            outputFil.write(line)
-            outputFil.newLine()
-        }
-    }
-    outputFil.close()
+    TODO()
 }
 
 /**
@@ -123,19 +111,7 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val replacement = mapOf("ы" to "и", "я" to "а", "ю" to "у", "Ы" to "И", "Я" to "А", "Ю" to "У")
-    val letters = listOf("ж", "ч", "ш", "щ")
-    val outputF = File(outputName).bufferedWriter()
-    for (line in File(inputName).readLines()) {
-        outputF.write(line[0].toString())
-        for (letter in 1..line.length - 1) {
-            if ((line[letter].toString() in replacement) && (line[letter - 1].toString().toLowerCase() in letters))
-                outputF.write(replacement[line[letter].toString()])
-            else outputF.write(line[letter].toString())
-        }
-        outputF.newLine()
-    }
-    outputF.close()
+    TODO()
 }
 
 /**
@@ -156,20 +132,7 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    val text = mutableListOf<String>()
-    var maxLen = 0
-    for (line in File(inputName).readLines()) {
-        val newLine = line.trim()
-        text.add(newLine)
-        maxLen = max(maxLen, newLine.length)
-    }
-    File(outputName).bufferedWriter().use {
-        for (line in text) {
-            val currentLen = line.length
-            val res = String.format("%${(maxLen + currentLen) / 2}s", line) + "\n"
-            it.write(res)
-        }
-    }
+    TODO()
 }
 
 /**
