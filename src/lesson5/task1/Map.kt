@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import java.util.*
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -349,15 +347,18 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in list.indices) {
-        if ((number - list[i]) in list) {
-            if (i == list.indexOf(number - list[i])) continue
-            else return Pair(i, list.indexOf(number - list[i]))
+    val map = mutableMapOf<Int, Int>()
+    val result = Pair(-1, -1)
+    for (index in list.indices) {
+        val diversity = number - list[index]
+        if (list[index] in map) {
+            val dif = map[list[index]]!!
+            return Pair(dif, index)
         }
+        map[diversity] = index
     }
-    return Pair(-1, -1)
+    return result
 }
-
 
 /**
  * Очень сложная (8 баллов)
