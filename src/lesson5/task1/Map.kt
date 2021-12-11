@@ -352,8 +352,8 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
     for (index in list.indices) {
         val diversity = number - list[index]
         if (list[index] in map) {
-            val dif = map[list[index]]!!
-            return Pair(dif, index)
+            val x = map[list[index]]!!
+            return Pair(x, index)
         }
         map[diversity] = index
     }
