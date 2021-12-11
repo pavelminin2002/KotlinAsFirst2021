@@ -511,7 +511,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     while (lhvS.substring(0, end).toInt() < rhv * result[0].toString().toInt()) end += 1
     negations.add((rhv * result[0].toString().toInt()).toString())
     if (result.length != 1) {
-        var remnant = (lhvS.substring(0, end).toInt() - rhv * result[0].toString().toInt()).toString()
+        var remnant = (lhvS.substring(0, end).toInt() - negations[0].toInt()).toString()
         var meaning = remnant + lhvS[end].toString() // значение после разности и прибавления к нему цифры из lhv
         remnants.add(remnant)
         meanings.add(meaning)
@@ -529,9 +529,8 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
         negations.add((rhv * result[i].toString().toInt()).toString())
     }
-    for ((index, element) in negations.withIndex()) negations[index] = "-$element"
+    for ((index, element) in negations.withIndex()) negations[index] = "-$element"//почему то не получилось сделать через map
     // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
-
     File(outputName).bufferedWriter().use {
         var space = 0
         val spaseAfter = lhvS.length - negations[0].length
