@@ -539,7 +539,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
 
     File(outputName).bufferedWriter().use {
         var space = 0
-        val spaseAfter = lhvS.length - negations[0].length
+        var spaceAfter = lhvS.length - negations[0].length
         if (negations[0] == "-0" && lhv.toString().length > 2) {
             it.write("$lhv | $rhv\n")
             space += lhvS.length - 2
@@ -548,13 +548,13 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             it.write("-".repeat(lhv.toString().length))
             it.newLine()
         } else {
-            if (remnants.size + negations[0].length == lhvS.length) {
-                it.write("$lhv | $rhv\n")
-                it.write(negations[0] + " ".repeat(spaseAfter) + "   $result\n")
-            } else {
-                it.write(" $lhv | $rhv\n")
-                it.write(negations[0] + " ".repeat(spaseAfter + 1) + "   $result\n")
-            }
+            if (remnants.size + negations[0].length != lhvS.length) {
+                spaceAfter += 1
+                it.write(" $lhv | $rhv")
+            } else it.write("$lhv | $rhv")
+            it.newLine()
+            it.write(negations[0] + " ".repeat(spaceAfter) + "   $result")
+            it.newLine()
             it.write("-".repeat(negations[0].length))
             it.newLine()
         }
@@ -563,21 +563,23 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         for (i in meanings.indices) {
             space += if (i == 0) negations[0].length - remnants[0].length
             else meanings[i - 1].length - remnants[i].length
+            val negLength = negations[i + 1].length
+            val meanLength = meanings[i].length
             it.write(" ".repeat(space) + meanings[i])
             it.newLine()
-            space += meanings[i].length - negations[i + 1].length
+            space += meanLength - negLength
             it.write(" ".repeat(space) + negations[i + 1])
             it.newLine()
-            if (meanings[i].length > negations[i + 1].length) {
-                space -= meanings[i].length - negations[i + 1].length
-                it.write(" ".repeat(space) + "-".repeat(meanings[i].length))
+            if (meanLength > negLength) {
+                space -= meanLength - negLength
+                it.write(" ".repeat(space) + "-".repeat(meanLength))
             } else {
-                it.write(" ".repeat(space) + "-".repeat(negations[i + 1].length))
-                if (negations[i + 1].length > meanings[i].length) space++
+                it.write(" ".repeat(space) + "-".repeat(negLength))
+                if (negLength > meanLength) space++
             }
             it.newLine()
             if (i == meanings.size - 1) {
-                space += meanings[i].length - finalRem.length
+                space += meanLength - finalRem.length
                 it.write(" ".repeat(space) + finalRem)
                 simpleDivision = false
             }
@@ -590,3 +592,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     }
 }
 
+//if (remnants.size + negations[0].length == lhvS.length) {
+//                it.write("$lhv | $rhv\n")
+//                it.write(negations[0] + " ".repeat(spaseAfter) + "   $result\n")
+//            } else {
+//                it.write(" $lhv | $rhv\n")
+//                it.write(negations[0] + " ".repeat(spaseAfter + 1) + "   $result\n")
+//            }
