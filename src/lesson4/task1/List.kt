@@ -139,8 +139,14 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 
-fun center(list: MutableList<Double>): MutableList<Double> =
-    if (list.isEmpty()) list else (list.map { it - list.sum() / list.size }).toMutableList()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    if (list.isEmpty()) return list
+    val average = list.sum() / list.size
+    for (i in list.indices) {
+        list[i] -= average
+    }
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -188,12 +194,9 @@ fun factorize(n: Int): List<Int> {
         if (nn % k == 0) {
             m.add(k)
             nn /= k
-            k = 2
-            continue
-        }
-        k++
+        } else k++
     }
-    return m.sorted()
+    return m
 }
 
 /**
@@ -242,18 +245,18 @@ fun convert(n: Int, base: Int): List<Int> {
  * Использовать функции стандартной библиотеки, напрямую и полностью решающие данную задачу
  * (например, n.toString(base) и подобные), запрещается.
  */
-fun chars(x: MutableList<Char>): MutableList<Char> {
+fun chars(): MutableList<Char> {
+    val x = mutableListOf<Char>()
     for (char in 'a'..'z') x.add(char)
     return x
 }
 
 fun convertToString(n: Int, base: Int): String {
-    val letters = chars(mutableListOf())
     val convertedNumber = convert(n, base)
     val result = mutableListOf<Any>()
     for (i in convertedNumber.indices) {
         if (convertedNumber[i] > 9) {
-            result.add(letters[(convertedNumber[i] - 10)])
+            result.add('a' + (convertedNumber[i] - 10))
         } else result.add(convertedNumber[i])
     }
     return result.joinToString(separator = "")
@@ -268,9 +271,9 @@ fun convertToString(n: Int, base: Int): String {
  * Например: digits = (1, 3, 12), base = 14 -> 250
  */
 fun decimal(digits: List<Int>, base: Int): Int {
-    val shadowing = digits.reversed()
+    val reversDigits = digits.reversed()
     var s = 0
-    for (i in shadowing.indices) s += shadowing[i] * base.toDouble().pow(i).toInt()
+    for (i in reversDigits.indices) s += reversDigits[i] * base.toDouble().pow(i).toInt()
     return s
 }
 
@@ -287,7 +290,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
  * (например, str.toInt(base)), запрещается.
  */
 fun decimalFromString(str: String, base: Int): Int {
-    val letters = chars(mutableListOf())
+    val letters = chars()
     val x = mutableListOf<Int>()
     for (i in str.indices) {
         if (str[i] in letters) {
