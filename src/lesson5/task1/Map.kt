@@ -97,12 +97,11 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  *     -> mapOf(5 to listOf("Семён", "Михаил"), 3 to listOf("Марат"))
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
-    val list_of_grades = mutableMapOf<Int, List<String>>()
+    val listGrades = mutableMapOf<Int, List<String>>()
     for ((key, value) in grades) {
-        if (list_of_grades[value] == null) list_of_grades[value] = listOf(key)
-        else list_of_grades[value] = list_of_grades[value]!! + key
+        listGrades[value] = listGrades.getOrPut(value) { listOf() } + key
     }
-    return list_of_grades
+    return listGrades
 }
 
 /**
