@@ -163,8 +163,8 @@ fun centerFile(inputName: String, outputName: String) {
  * 8) Если входной файл удовлетворяет требованиям 1-7, то он должен быть в точности идентичен выходному файлу
  */
 fun alignFileByWidth(inputName: String, outputName: String) {
-    val sizeOfList = mutableListOf<Int>()
-    val map = mutableMapOf<Int, List<String>>()
+    val sizeList = mutableListOf<Int>()
+    val lines = mutableMapOf<Int, List<String>>()
     var k = -1
     var maxLength = 0
     for (list in File(inputName).readLines()) {
@@ -173,20 +173,20 @@ fun alignFileByWidth(inputName: String, outputName: String) {
         var lengthOfWords = words.fold(0) { x, it -> x + it.length }
         if (words.isNotEmpty()) {
             lengthOfWords += words.size - 1
-            map[k] = words
-        } else map[k] = listOf("")
-        sizeOfList.add(lengthOfWords)
+            lines[k] = words
+        } else lines[k] = listOf("")
+        sizeList.add(lengthOfWords)
         maxLength = max(maxLength, lengthOfWords)
     }
     File(outputName).bufferedWriter().use {
-        for ((key, value) in map.entries) {
+        for ((key, value) in lines.entries) {
             if (value.size == 1) {
                 it.write(value[0])
                 it.newLine()
                 continue
             }
             val numberOfSpaces = value.size - 1
-            val t = maxLength - sizeOfList[key]
+            val t = maxLength - sizeList[key]
             val wholeOfSpaces = t / numberOfSpaces
             var remnantOfSpaces = t % numberOfSpaces
             for (i in 0..value.size - 2) {
@@ -504,21 +504,26 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val lhvS = lhv.toString()
     val result = (lhv / rhv).toString()
     val finalRem = (lhv % rhv).toString()
-    val meanings = mutableListOf<String>() // список значений которые получатся после очередной разности
-    val negations = mutableListOf<String>() // список значений на которые будут убавляться значения из списка meaning
-    val remnants = mutableListOf<String>() // список остатков
+    val meanings = mutableListOf<String>()
+    val negations = mutableListOf<String>()
+    val remnants = mutableListOf<String>()
     var end = 1
-    while (lhvS.substring(0, end).toInt() < rhv * result[0].toString().toInt()) end += 1
-    negations.add((rhv * result[0].toString().toInt()).toString())
+    var negation = rhv * result[0].toString().toInt()
+    var subStr = lhvS.substring(0, end).toInt()
+    while (subStr < negation) {
+        end += 1
+        subStr = lhvS.substring(0, end).toInt()
+    }
+    negations.add(negation.toString())
     if (result.length != 1) {
-        var remnant = (lhvS.substring(0, end).toInt() - negations[0].toInt()).toString()
-        var meaning = remnant + lhvS[end].toString() // значение после разности и прибавления к нему цифры из lhv
+        var remnant = (subStr - negation).toString()
+        var meaning = remnant + lhvS[end].toString()
         remnants.add(remnant)
         meanings.add(meaning)
         var x = end + 1
         var i = 1
         while (x < lhvS.length) {
-            val negation = rhv * result[i].toString().toInt()
+            negation = rhv * result[i].toString().toInt()
             remnant = (meaning.toInt() - negation).toString()
             meanings.add(remnant + lhvS[x].toString())
             negations.add(negation.toString())
@@ -527,10 +532,11 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             x++
             i++
         }
-        negations.add((rhv * result[i].toString().toInt()).toString())
+        negation = rhv * result[i].toString().toInt()
+        negations.add(negation.toString())
     }
-    for ((index, element) in negations.withIndex()) negations[index] = "-$element"//почему то не получилось сделать через map
-    // после того, как все необходимые значения были созданы, можно приступить к записи их в файл с нужным форматом
+    for ((index, element) in negations.withIndex()) negations[index] = "-$element"
+
     File(outputName).bufferedWriter().use {
         var space = 0
         val spaseAfter = lhvS.length - negations[0].length
@@ -539,44 +545,47 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             space += lhvS.length - 2
             it.write(" ".repeat(space) + negations[0] + "   $result\n")
             space -= lhv.toString().length - 2
-            it.write("-".repeat(lhv.toString().length) + "\n")
+            it.write("-".repeat(lhv.toString().length))
+            it.newLine()
         } else {
             if (remnants.size + negations[0].length == lhvS.length) {
                 it.write("$lhv | $rhv\n")
                 it.write(negations[0] + " ".repeat(spaseAfter) + "   $result\n")
             } else {
                 it.write(" $lhv | $rhv\n")
-                if (spaseAfter < 0) it.write(negations[0] + "   $result\n")
-                else it.write(negations[0] + " ".repeat(spaseAfter) + "    $result\n")
+                it.write(negations[0] + " ".repeat(spaseAfter + 1) + "   $result\n")
             }
-            it.write("-".repeat(negations[0].length) + "\n")
+            it.write("-".repeat(negations[0].length))
+            it.newLine()
         }
-        var flag = true
-        // после внесения основы можем приступить к внесению последующих операции
+
+        var simpleDivision = true
         for (i in meanings.indices) {
             space += if (i == 0) negations[0].length - remnants[0].length
             else meanings[i - 1].length - remnants[i].length
-            it.write(" ".repeat(space) + meanings[i] + "\n")
+            it.write(" ".repeat(space) + meanings[i])
+            it.newLine()
             space += meanings[i].length - negations[i + 1].length
-            it.write(" ".repeat(space) + negations[i + 1] + "\n")
+            it.write(" ".repeat(space) + negations[i + 1])
+            it.newLine()
             if (meanings[i].length > negations[i + 1].length) {
                 space -= meanings[i].length - negations[i + 1].length
-                it.write(" ".repeat(space) + "-".repeat(meanings[i].length) + "\n")
+                it.write(" ".repeat(space) + "-".repeat(meanings[i].length))
             } else {
-                it.write(" ".repeat(space) + "-".repeat(negations[i + 1].length) + "\n")
+                it.write(" ".repeat(space) + "-".repeat(negations[i + 1].length))
                 if (negations[i + 1].length > meanings[i].length) space++
             }
+            it.newLine()
             if (i == meanings.size - 1) {
                 space += meanings[i].length - finalRem.length
-                it.write(" ".repeat(space) + finalRem + "\n")
-                flag = false // flag показывает что отрицании было больше одного
+                it.write(" ".repeat(space) + finalRem)
+                simpleDivision = false
             }
         }
-        //для случаев когда была лишь одна разность
-        if (flag) {
+        if (simpleDivision) {
             if (lhvS.length < negations[0].length) space++
             space += lhvS.length - finalRem.length
-            it.write(" ".repeat(space) + finalRem + "\n")
+            it.write(" ".repeat(space) + finalRem)
         }
     }
 }
