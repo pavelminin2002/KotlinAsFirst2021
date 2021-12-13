@@ -591,11 +591,3 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         }
     }
 }
-
-//if (remnants.size + negations[0].length == lhvS.length) {
-//                it.write("$lhv | $rhv\n")
-//                it.write(negations[0] + " ".repeat(spaseAfter) + "   $result\n")
-//            } else {
-//                it.write(" $lhv | $rhv\n")
-//                it.write(negations[0] + " ".repeat(spaseAfter + 1) + "   $result\n")
-//            }
