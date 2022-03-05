@@ -82,14 +82,17 @@ data class Circle(val center: Point, val radius: Double) {
      * расстояние между их центрами минус сумма их радиусов.
      * Расстояние между пересекающимися окружностями считать равным 0.0.
      */
-    fun distance(other: Circle): Double = TODO()
+    fun distance(other: Circle): Double {
+        val x = center.distance(other.center) - (radius + other.radius)
+        return if (x <= 0) 0.0 else x
+    }
 
     /**
      * Тривиальная (1 балл)
      *
      * Вернуть true, если и только если окружность содержит данную точку НА себе или ВНУТРИ себя
      */
-    fun contains(p: Point): Boolean = TODO()
+    fun contains(p: Point): Boolean = center.distance(p) <= radius
 }
 
 /**
@@ -109,7 +112,21 @@ data class Segment(val begin: Point, val end: Point) {
  * Дано множество точек. Вернуть отрезок, соединяющий две наиболее удалённые из них.
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
-fun diameter(vararg points: Point): Segment = TODO()
+fun diameter(vararg points: Point): Segment {
+    require(points.size >= 2)
+    var maxdist = points[0].distance(points[1])
+    var maxseq = Segment(points[0], points[1])
+    for (i in 0..points.size - 2) {
+        for (j in i + 1 until points.size) {
+            val d = points[i].distance(points[j])
+            if (d > maxdist) {
+                maxdist = d
+                maxseq = Segment(points[i], points[j])
+            }
+        }
+    }
+    return maxseq
+}
 
 /**
  * Простая (2 балла)
@@ -117,7 +134,13 @@ fun diameter(vararg points: Point): Segment = TODO()
  * Построить окружность по её диаметру, заданному двумя точками
  * Центр её должен находиться посередине между точками, а радиус составлять половину расстояния между ними
  */
-fun circleByDiameter(diameter: Segment): Circle = TODO()
+fun circleByDiameter(diameter: Segment): Circle {
+    val beg = diameter.begin
+    val en = diameter.end
+    val rad = beg.distance(en) / 2.0
+    val cent = Point((beg.x + en.x) / 2.0, (beg.y + en.y) / 2.0)
+    return Circle(cent, rad)
+}
 
 /**
  * Прямая, заданная точкой point и углом наклона angle (в радианах) по отношению к оси X.
@@ -184,7 +207,22 @@ fun bisectorByPoints(a: Point, b: Point): Line = TODO()
  *
  * Если в списке менее двух окружностей, бросить IllegalArgumentException
  */
-fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> = TODO()
+fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
+    val lisrOfCircles = listOf(*circles)
+    require(lisrOfCircles.size >= 2)
+    var minDist = lisrOfCircles[0].distance(lisrOfCircles[1])
+    var result = Pair(lisrOfCircles[0], lisrOfCircles[1])
+    for (i in 0 until lisrOfCircles.size - 1) {
+        for (j in i + 1 until lisrOfCircles.size) {
+            val dist = lisrOfCircles[i].distance(lisrOfCircles[j])
+            if (dist < minDist) {
+                minDist = dist
+                result = Pair(lisrOfCircles[i], lisrOfCircles[j])
+            }
+        }
+    }
+    return result
+}
 
 /**
  * Сложная (5 баллов)

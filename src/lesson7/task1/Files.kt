@@ -4,6 +4,7 @@ package lesson7.task1
 
 
 import java.io.File
+import kotlin.math.abs
 import kotlin.math.max
 
 
@@ -590,4 +591,41 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
             it.write(" ".repeat(space) + finalRem)
         }
     }
+}
+
+
+fun myFUny(text: String, teams: List<String>): List<String> {
+    val listOfCommands = mutableListOf<String>()
+    val result = mutableMapOf<String, Int>()
+    if (text.matches(Regex("""([\wА-я]+ \d+:\d+ [\wА-я]+; )*[\wА-я]+ \d+:\d+ [\wА-я]+"""))) {
+        for (i in teams.indices) {
+            result[teams[i]] = 0
+        }
+        val matches = text.split(Regex("""; """))
+        for (i in matches.indices) {
+            val frogment = matches[i].split(Regex(""" """))
+            val check = frogment[1].split(Regex(""":"""))
+            var ball_1 = 0
+            var ball_2 = 0
+            if (check[0].toInt() == check[1].toInt()) {
+                ball_1++
+                ball_2++
+            } else if (check[0].toInt() > check[1].toInt()) {
+                ball_1 += 3
+            } else ball_2 += 3
+            if (frogment[0] in teams) {
+                result[frogment[0]] = result[frogment[0]]!! + ball_1
+            }
+            if (frogment[2] in teams){
+                result[frogment[2]] = result[frogment[2]]!! + ball_2
+            }
+        }
+        val sortResult = result.toList().sortedBy { (key, value) -> value }.toMap()
+        for ((command, point) in sortResult) {
+            if (command in teams) {
+                listOfCommands.add(command)
+            }
+        }
+        return listOfCommands.asReversed()
+    } else throw IllegalArgumentException()
 }

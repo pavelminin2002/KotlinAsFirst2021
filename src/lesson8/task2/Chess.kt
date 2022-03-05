@@ -22,7 +22,12 @@ data class Square(val column: Int, val row: Int) {
      * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
      * Для клетки не в пределах доски вернуть пустую строку
      */
-    fun notation(): String = TODO()
+
+    fun notation(): String {
+        return if (this.inside()) {
+            "${'a' + this.column - 1}$row"
+        } else ""
+    }
 }
 
 /**
@@ -32,7 +37,14 @@ data class Square(val column: Int, val row: Int) {
  * В нотации, колонки обозначаются латинскими буквами от a до h, а ряды -- цифрами от 1 до 8.
  * Если нотация некорректна, бросить IllegalArgumentException
  */
-fun square(notation: String): Square = TODO()
+fun square(notation: String): Square {
+    require(notation.length == 2)
+    val l = Pair(notation[0], notation[1])
+    val colomn = l.first
+    val row = l.second
+    require(colomn in 'a'..'h' && row in '1'..'8')
+    return Square(column = colomn - 'a' + 1, row = row.toString().toInt())
+}
 
 /**
  * Простая (2 балла)
@@ -57,7 +69,12 @@ fun square(notation: String): Square = TODO()
  * Пример: rookMoveNumber(Square(3, 1), Square(6, 3)) = 2
  * Ладья может пройти через клетку (3, 3) или через клетку (6, 1) к клетке (6, 3).
  */
-fun rookMoveNumber(start: Square, end: Square): Int = TODO()
+fun rookMoveNumber(start: Square, end: Square): Int {
+    require(start.inside() && end.inside())
+    if (start == end) return 0
+    return if (start.column == end.column || start.row == end.row) 1
+    else 2
+}
 
 /**
  * Средняя (3 балла)
@@ -73,7 +90,15 @@ fun rookMoveNumber(start: Square, end: Square): Int = TODO()
  *          rookTrajectory(Square(3, 5), Square(8, 5)) = listOf(Square(3, 5), Square(8, 5))
  * Если возможно несколько вариантов самой быстрой траектории, вернуть любой из них.
  */
-fun rookTrajectory(start: Square, end: Square): List<Square> = TODO()
+fun rookTrajectory(start: Square, end: Square): List<Square> {
+    require(start.inside() && end.inside())
+    val result = mutableListOf(start)
+    if (start == end) return result
+    val x = rookMoveNumber(start, end)
+    if (x == 2) result.add(Square(end.column, start.row))
+    result.add(end)
+    return result
+}
 
 /**
  * Простая (2 балла)

@@ -1,9 +1,13 @@
 package lesson7.task1
 
+import lesson4.task1.factorizeToString
+import lesson6.task1.plusMinus
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.io.File
+import org.junit.jupiter.api.Assertions.assertThrows
 
 class Tests {
 
@@ -380,7 +384,7 @@ Basic, Ruby, Swift.
 
     @Test
     @Tag("25")
-    fun printDivisionProcess() {
+    fun printDivisionProcesss() {
 
         fun test(lhv: Int, rhv: Int, res: String) {
             printDivisionProcess(lhv, rhv, "temp.txt")
@@ -440,5 +444,31 @@ Basic, Ruby, Swift.
         )
 
         File("temp.txt").delete()
+    }
+
+    @Test
+    @Tag("25")
+    fun myveryFunny() {
+        for (i in 0 until 10) {
+            printDivisionProcess((100..100000).random(), (1..11).random(), "temp.txt")
+        }
+    }
+
+    @Test
+    @Tag("25")
+    fun myveryFunnny() {
+        assertThrows(IllegalArgumentException::class.java) {
+            myFUny(
+                "Зенит l:1 Спартак; Зенит 2:1 Спартак",
+                listOf("Зенит", "Спартак")
+            )
+        }
+        assertEquals(
+            listOf("Спартак", "Локоматив", "Барса", "Зенит"), myFUny(
+                "Спартак 3:1 Зенит; Локоматив 0:1 Спартак; Локоматив 2:0 Барса; Зенит 1:1 Барса",
+                listOf("Спартак", "Локоматив", "Зенит", "Барса")
+            )
+        )
+        assertThrows(IllegalArgumentException::class.java) { myFUny("", listOf()) }
     }
 }
