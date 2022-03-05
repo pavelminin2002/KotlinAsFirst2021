@@ -26,7 +26,7 @@ fun main() {
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-    private class Human(name: String) {
+    private data class Human(val name: String) {
         init {
             if (!name.matches(Regex("""[A-zА-я]+ [A-zА-я]+""")))
                 throw IllegalArgumentException("Invalid name format")
