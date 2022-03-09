@@ -2,14 +2,6 @@
 
 package lesson12.task1
 
-import org.junit.Test
-
-fun main() {
-    val x = mutableMapOf("Васильев Дмитрий" to "+79217654321", "Иванов Петр" to "+79211234567")
-    val y = mutableMapOf("Иванов Петр" to "+79211234567", "Васильев Дмитрий" to "+79217654321")
-    println(x.toSortedMap() == y.toSortedMap())
-}
-
 /**
  * Класс "Телефонная книга".
  *
@@ -28,17 +20,17 @@ fun main() {
 class PhoneBook {
     private data class Human(val name: String) {
         init {
-            if (!name.matches(Regex("""[A-zА-я]+ [A-zА-я]+""")))
+            if (!name.matches(Regex("""[A-zА-яЁё]+ [A-zА-яЁё]+""")))
                 throw IllegalArgumentException("Invalid name format")
         }
 
         var listPhone = mutableSetOf<String>()
     }
 
-    private var listHuman = mutableMapOf<String, Human>()
+    private var mapHuman = mutableMapOf<String, Human>()
 
     private fun String.phoneTest() {
-        if (!this.matches(Regex("""\+[\d\-\*#]+"""))) throw IllegalArgumentException("Invalid phone format")
+        if (!this.matches(Regex("""\+[\d\-*#]+"""))) throw IllegalArgumentException("Invalid phone format")
     }
 
     /**
@@ -48,9 +40,9 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun addHuman(name: String): Boolean {
-        return if (name in listHuman) false
+        return if (name in mapHuman) false
         else {
-            listHuman[name] = Human(name)
+            mapHuman[name] = Human(name)
             true
         }
     }
@@ -62,8 +54,8 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun removeHuman(name: String): Boolean {
-        return if (name in listHuman) {
-            listHuman.remove(name)
+        return if (name in mapHuman) {
+            mapHuman.remove(name)
             true
         } else false
     }
@@ -77,11 +69,11 @@ class PhoneBook {
      */
     fun addPhone(name: String, phone: String): Boolean {
         phone.phoneTest()
-        if (name !in listHuman) return false
-        for (i in listHuman.values) {
-            if (phone in i.listPhone) return false
+        if (name !in mapHuman) return false
+        for (human in mapHuman.values) {
+            if (phone in human.listPhone) return false
         }
-        listHuman[name]!!.listPhone.add(phone)
+        mapHuman[name]!!.listPhone.add(phone)
         return true
     }
 
@@ -93,10 +85,10 @@ class PhoneBook {
      */
     fun removePhone(name: String, phone: String): Boolean {
         phone.phoneTest()
-        if (name !in listHuman) return false
+        if (name !in mapHuman) return false
         else {
-            if (phone !in listHuman[name]!!.listPhone) return false
-            else listHuman[name]!!.listPhone.remove(phone)
+            if (phone !in mapHuman[name]!!.listPhone) return false
+            else mapHuman[name]!!.listPhone.remove(phone)
         }
         return true
     }
@@ -105,7 +97,7 @@ class PhoneBook {
      * Вернуть все номера телефона заданного человека.
      * Если этого человека нет в книге, вернуть пустой список
      */
-    fun phones(name: String): Set<String> = listHuman[name]?.listPhone ?: setOf()
+    fun phones(name: String): Set<String> = mapHuman[name]?.listPhone ?: setOf()
 
     /**
      * Вернуть имя человека по заданному номеру телефона.
@@ -113,28 +105,20 @@ class PhoneBook {
      */
     fun humanByPhone(phone: String): String? {
         phone.phoneTest()
-        for ((name, i) in listHuman) {
-            if (phone in i.listPhone) return name
+        for ((name, human) in mapHuman) {
+            if (phone in human.listPhone) return name
         }
         return null
     }
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
-        if (other is PhoneBook) {
-            if (listHuman.keys == other.listHuman.keys) {
-                for ((key, name) in listHuman) {
-                    if (name.listPhone != other.listHuman[key]!!.listPhone) return false
-                }
-
-            } else return false
-        } else return false
-        return true
+        if (other !is PhoneBook) return false
+        if (mapHuman.keys != other.mapHuman.keys) return false
+        return mapHuman.entries.all { it.value.listPhone == other.mapHuman[it.key]!!.listPhone }
     }
 
-    override fun hashCode(): Int {
-        return listHuman.hashCode()
-    }
+    override fun hashCode(): Int = mapHuman.hashCode()
 
 
     /**
@@ -144,3 +128,17 @@ class PhoneBook {
      */
 
 }
+
+
+//{
+//        if (other === this) return true
+//        if (other is PhoneBook) {
+//            if (mapHuman.keys == other.mapHuman.keys) {
+//                for ((key, name) in mapHuman) {
+//                    if (name.listPhone != other.mapHuman[key]!!.listPhone) return false
+//                }
+//
+//            } else return false
+//        } else return false
+//        return true
+//    }

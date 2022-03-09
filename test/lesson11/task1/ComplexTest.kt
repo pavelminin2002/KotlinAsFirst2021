@@ -48,4 +48,11 @@ internal class ComplexTest {
         assertApproxEquals(Complex(1.0, 2.0), Complex("1+2i"), 1e-12)
         assertApproxEquals(Complex(1.0, 0.0), Complex(1.0), 1e-12)
     }
+
+    @Test
+    fun formatTest() {
+        assertThrows(IllegalArgumentException::class.java) { Complex("1+3") }
+        assertThrows(IllegalArgumentException::class.java) { Complex("1+b") }
+        assertThrows(IllegalArgumentException::class.java) { Complex("") }
+    }
 }

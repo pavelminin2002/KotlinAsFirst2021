@@ -6,10 +6,9 @@ package lesson11.task1
  * Фабричный метод для создания комплексного числа из строки вида x+yi
  */
 fun Complex(s: String): Complex {
-    if (s.matches(Regex("""\d+[+-]\d+i"""))) {
-        val index = s.indexOfFirst { it == '+' || it == '-' }
-        return Complex(s.substring(0, index).toDouble(), s.substring(index, s.length - 1).toDouble())
-    } else throw IllegalArgumentException()
+    require(s.matches(Regex("""\d+[+-]\d+i""")))
+    val index = s.indexOfFirst { it == '+' || it == '-' }
+    return Complex(s.substring(0, index).toDouble(), s.substring(index, s.length - 1).toDouble())
 }
 
 /**
@@ -41,7 +40,7 @@ class Complex(val re: Double, val im: Double) {
     /**
      * Вычитание
      */
-    operator fun minus(other: Complex): Complex = this + other.unaryMinus()
+    operator fun minus(other: Complex): Complex = this + (-other)
 
     /**
      * Умножение
@@ -56,6 +55,7 @@ class Complex(val re: Double, val im: Double) {
      */
     operator fun div(other: Complex): Complex {
         val x = other.re * other.re + other.im * other.im
+        if (x == 0.0) throw ArithmeticException("/ by zero")
         return Complex(
             (re * other.re + im * other.im) / x,
             (im * other.re - re * other.im) / x

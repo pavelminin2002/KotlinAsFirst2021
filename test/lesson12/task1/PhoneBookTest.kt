@@ -113,4 +113,22 @@ internal class PhoneBookTest {
         assertTrue(book2.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book.hashCode() == book2.hashCode())
     }
+
+    @Test
+    fun testName() {
+        val book = PhoneBook()
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Ваня") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Ва1я Ива") }
+        assertTrue(book.addHuman("Ванёчек ИванЁчек"))
+    }
+
+    @Test
+    fun testPhone() {
+        val book = PhoneBook()
+        assertThrows(IllegalArgumentException::class.java) { book.addPhone("Иванов Петр", "kek") }
+        assertTrue(book.addHuman("Иванов Петр"))
+        assertTrue(book.addPhone("Иванов Петр", "+89-808-27-10"))
+        assertFalse(book.addPhone("Иванова Петрушка", "+89-808-27-11"))
+    }
 }
