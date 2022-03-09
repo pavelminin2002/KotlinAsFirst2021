@@ -128,17 +128,3 @@ class PhoneBook {
      */
 
 }
-
-
-//{
-//        if (other === this) return true
-//        if (other is PhoneBook) {
-//            if (mapHuman.keys == other.mapHuman.keys) {
-//                for ((key, name) in mapHuman) {
-//                    if (name.listPhone != other.mapHuman[key]!!.listPhone) return false
-//                }
-//
-//            } else return false
-//        } else return false
-//        return true
-//    }
