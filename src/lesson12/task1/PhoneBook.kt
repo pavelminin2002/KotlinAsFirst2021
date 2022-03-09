@@ -39,13 +39,13 @@ class PhoneBook {
      * и false, если человек с таким именем уже был в телефонной книге
      * (во втором случае телефонная книга не должна меняться).
      */
-    fun addHuman(name: String): Boolean {
-        return if (name in mapHuman) false
+    fun addHuman(name: String): Boolean =
+        if (name in mapHuman) false
         else {
             mapHuman[name] = Human(name)
             true
         }
-    }
+
 
     /**
      * Убрать человека.
